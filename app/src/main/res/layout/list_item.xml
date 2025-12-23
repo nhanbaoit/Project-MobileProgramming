@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="#fef7ff"
+        android:foreground="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/imgHinh"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            app:srcCompat="@drawable/ic_launcher_background" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="130dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginTop="5dp"
+                android:text="Title"
+                android:textColor="#580675"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/tvInfor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginBottom="3dp"
+                android:text="Thông tin chó mèo"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+
+
+                <TextView
+                    android:id="@+id/tvSua"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:gravity="center"
+                    android:text="Sửa"
+                    android:textSize="20sp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/btn_update_selector"
+                    android:textColor="#2E7D32"
+                    android:textStyle="bold"
+                    android:clickable="true"/>
+
+                <TextView
+                    android:id="@+id/tvXoa"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:textColor="#B60244"
+                    android:background="@drawable/btn_delete_selector"
+                    android:text="Xóa"
+                    android:textSize="20sp" />
+                <!--                <Button-->
+                <!--                    android:id="@+id/btnChiTiet"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:text="chi tiết"-->
+                <!--                    android:backgroundTint="#7E7656"/>-->
+                <!--                <Button-->
+                <!--                    android:id="@+id/btnSua"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:text="Sửa"-->
+                <!--                    android:layout_marginLeft="3dp"/>-->
+
+                <!--                <Button-->
+                <!--                    android:id="@+id/btnXoa"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginLeft="3dp"-->
+                <!--                    android:text="Xóa" />-->
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

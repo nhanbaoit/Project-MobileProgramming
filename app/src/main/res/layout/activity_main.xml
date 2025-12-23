@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#5EC2B7"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="35dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Thú cưng của tôi "
+            android:textColor="#FFF"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imvAdd"
+            android:layout_width="61dp"
+            android:layout_height="49dp"
+            android:padding="10dp"
+            android:src="@drawable/add" />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#5EC2B7"
+        android:gravity="center"
+        android:paddingLeft="15dp"
+        android:paddingRight="2dp"
+        android:text="Nhóm 1 - Lê Văn Thế - CRUD Thú cưng"
+        android:textColor="#FFF"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+    <ListView
+        android:id="@+id/lvpet"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="#fef7ff"
+        android:dividerHeight="0sp"
+        />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_menu" />
+</LinearLayout>

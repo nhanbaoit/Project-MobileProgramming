@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="#EF9A9A"/> <!-- đỏ nhạt khi nhấn -->
+            <corners android:radius="20dp"/>
+        </shape>
+    </item>
+
+    <!-- Mặc định -->
+    <item>
+        <shape>
+            <solid android:color="#F8BBD0"/> <!-- hồng pastel -->
+            <corners android:radius="20dp"/>
+        </shape>
+    </item>
+</selector>

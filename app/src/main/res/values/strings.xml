@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">DoAn</string>
+
+    <string-array name="dich_vu_array">
+        <item>Chọn Gói Dịch Vụ</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="loai_tim_array">
+        <item>Thú cưng</item>
+        <item>Bệnh án</item>
+        <item>Lịch hẹn</item>
+    </string-array>
+
+</resources>

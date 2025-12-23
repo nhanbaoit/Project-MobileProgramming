@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_pet"
+        android:icon="@drawable/pet_icon"
+        android:title="Thú cưng"/>
+
+    <item
+        android:id="@+id/menu_timKiem"
+        android:icon="@drawable/timkiem"
+        android:title="Tìm kiếm"/>
+
+    <item
+        android:id="@+id/menu_lichKham"
+        android:icon="@drawable/lk"
+        android:title="Đặt lịch khám"/>
+
+    <item
+        android:id="@+id/menu_thongKe"
+        android:icon="@drawable/tk"
+        android:title="Thống kê"/>
+    <item
+        android:id="@+id/menu_taiKhoan"
+        android:icon="@drawable/account"
+        android:title="Tài Khoản"/>
+</menu>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.ChiTietPetActivity">
+
+    <TextView
+        android:id="@+id/tvPetNameTiTle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#5EC2B7"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:text="Text"
+        android:textColor="#FFF"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nhóm 1 - Lê Văn Thế - Chi tiết thú cưng"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:paddingHorizontal="16dp"
+        android:textColor="#FFF"
+        android:background="#5EC2B7"/>
+
+    <ImageView
+        android:id="@+id/imgMeo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/meo1" />
+
+    <TextView
+        android:id="@+id/tvtenPet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:text="Tên: "
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvGiong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:text="Giống: "
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvCanNang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:text="Cân nặng: "
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tvGhiChu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="10dp"
+        android:text="Ghi chú: "
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="#5EC2B7"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="BỆNH ÁN"
+        android:textColor="#FFF"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Nhóm 1 - Lê Văn Thế - CRUD Bệnh án"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:paddingHorizontal="15dp"
+        android:textColor="#FFF"
+        android:background="#5EC2B7"/>
+
+    <TextView
+        android:id="@+id/tvAddBenhAn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/tv_add_benh_thu_cung"
+        android:padding="12dp"
+        android:text="+ Thêm bệnh án"
+        android:textColor="#33691E"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+
+    <ListView
+        android:id="@+id/lvbenhAn"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:layout_weight="1" />
+</LinearLayout>
