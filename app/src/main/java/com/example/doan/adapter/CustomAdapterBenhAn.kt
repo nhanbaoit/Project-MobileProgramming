@@ -7,7 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import com.example.doan.database.DBBenhAn
+import android.widget.Toast
+import com.example.doan.repository.FirebaseBenhAnRepository
 import com.example.doan.model.InforBenhAn
 import com.example.doan.R
 import com.example.doan.activity.SuaBenhAnActivity
@@ -36,10 +37,7 @@ class CustomAdapterBenhAn(val activity: Activity, val list: MutableList<InforBen
 
         suaBenh.setOnClickListener {
             val intent = Intent(activity, SuaBenhAnActivity::class.java)
-            intent.putExtra(
-                "Ba_ID",
-                list[position].id
-            )//chuyển dữ liệu id_benh_an từ chiTietPet sang SuaBenhAnActivity
+            intent.putExtra("Ba_ID", list[position].id)
             activity.startActivity(intent)
         }
         xoaBenh.setOnClickListener {
@@ -47,12 +45,18 @@ class CustomAdapterBenhAn(val activity: Activity, val list: MutableList<InforBen
                 .setTitle("Xóa")
                 .setMessage("Bạn có muốn xóa bản ghi bệnh này ?")
                 .setPositiveButton("OK") { dialog, which ->
-                    DBBenhAn(activity).XoaBenhAn(list[position].id)
-                    list.removeAt(position)
-                    notifyDataSetChanged()
+                    val repo = FirebaseBenhAnRepository()
+                    repo.deleteBenhAn(list[position].id, {
+                        Toast.makeText(activity, "Đã xóa", Toast.LENGTH_SHORT).show()
+                        // Xóa xong cần update lại list hoặc gọi từ Activity. Ta tạm xoá trên adapter trước.
+                        list.removeAt(position)
+                        notifyDataSetChanged()
+                    }, {
+                        Toast.makeText(activity, "Xóa thất bại", Toast.LENGTH_SHORT).show()
+                    })
                 }.setNegativeButton("Hủy", null)
                 .show()
         }
         return rowview
     }
-}
+}

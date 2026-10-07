@@ -9,8 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.doan.adapter.BenhAnSearchAdapter
 import com.example.doan.adapter.PetSearchAdapter
 import com.example.doan.adapter.AppointmentSearchAdapter
-import com.example.doan.database.DBBenhAn
-import com.example.doan.database.DBpet
+import com.example.doan.repository.FirebaseBenhAnRepository
+import com.example.doan.repository.FirebasePetRepository
 import com.example.doan.model.InforBenhAn
 import com.example.doan.model.InforPet
 import com.example.doan.R
@@ -50,8 +50,8 @@ class SearchProfilePetActivity : AppCompatActivity() {
     private lateinit var imgHinhPet: ImageView
     private lateinit var tvKetQua: TextView
 
-    private lateinit var dbPet: DBpet
-    private lateinit var dbBenhAn: DBBenhAn
+    private lateinit var dbPet: FirebasePetRepository
+    private lateinit var dbBenhAn: FirebaseBenhAnRepository
 
     // ✅ DB lịch hẹn (appointments)
     private lateinit var dbAppt: DatabaseHelper
@@ -74,8 +74,8 @@ class SearchProfilePetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_profile_pet)
 
-        dbPet = DBpet(this)
-        dbBenhAn = DBBenhAn(this)
+        dbPet = FirebasePetRepository()
+        dbBenhAn = FirebaseBenhAnRepository()
         dbAppt = DatabaseHelper(this)
 
         setControl()
@@ -197,10 +197,11 @@ class SearchProfilePetActivity : AppCompatActivity() {
     }
     private fun loadInitial() {
         if (isPetMode()) {
-            dsPet.clear()
-            dsPet.addAll(dbPet.LayDL())
-            petAdapter.notifyDataSetChanged()
-
+            dbPet.listenToPets { list ->
+                dsPet.clear()
+                dsPet.addAll(list)
+                petAdapter.notifyDataSetChanged()
+            }
         } else if (isBenhAnMode()) {
             dsBenhAn.clear()
             benhAnAdapter.notifyDataSetChanged()
@@ -303,12 +304,24 @@ class SearchProfilePetActivity : AppCompatActivity() {
             when {
                 isPetMode() -> {
                     val kw = edtSearch.text.toString().trim()
-                    dsPet.clear()
-                    dsPet.addAll(if (kw.isEmpty()) dbPet.LayDL() else dbPet.searchPet(kw))
-                    petAdapter.notifyDataSetChanged()
-
-                    if (dsPet.isEmpty()) {
-                        Toast.makeText(this, "Không tìm thấy thú cưng phù hợp!", Toast.LENGTH_SHORT).show()
+                    if (kw.isEmpty()) {
+                        dbPet.listenToPets { list ->
+                            dsPet.clear()
+                            dsPet.addAll(list)
+                            petAdapter.notifyDataSetChanged()
+                            if (dsPet.isEmpty()) {
+                                Toast.makeText(this@SearchProfilePetActivity, "Không tìm thấy thú cưng phù hợp!", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        dbPet.searchPets(kw) { list ->
+                            dsPet.clear()
+                            dsPet.addAll(list)
+                            petAdapter.notifyDataSetChanged()
+                            if (dsPet.isEmpty()) {
+                                Toast.makeText(this@SearchProfilePetActivity, "Không tìm thấy thú cưng phù hợp!", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                 }
 
@@ -320,12 +333,13 @@ class SearchProfilePetActivity : AppCompatActivity() {
                         return@setOnClickListener
                     }
 
-                    dsBenhAn.clear()
-                    dsBenhAn.addAll(dbBenhAn.filterBenhAnByDateRange(f, t))
-                    benhAnAdapter.notifyDataSetChanged()
-
-                    if (dsBenhAn.isEmpty()) {
-                        Toast.makeText(this, "Không có bệnh án trong khoảng thời gian này!", Toast.LENGTH_SHORT).show()
+                    dbBenhAn.filterBenhAnByDateRange(f, t) { list ->
+                        dsBenhAn.clear()
+                        dsBenhAn.addAll(list)
+                        benhAnAdapter.notifyDataSetChanged()
+                        if (dsBenhAn.isEmpty()) {
+                            Toast.makeText(this@SearchProfilePetActivity, "Không có bệnh án trong khoảng thời gian này!", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
 
@@ -378,29 +392,29 @@ class SearchProfilePetActivity : AppCompatActivity() {
 
                 isBenhAnMode() -> {
                     val ba = dsBenhAn[position]
-                    val pet = dbPet.getpetID(ba.pet_id)
-
-                    if (pet != null) {
-                        imgHinhPet.setImageResource(pet.image)
-                        tvKetQua.text =
-                            "BỆNH ÁN #${ba.id}\n" +
-                                    "Ngày khám: ${ba.ngay}\n" +
-                                    "Triệu chứng: ${ba.trieuchung}\n" +
-                                    "Chẩn đoán: ${ba.chuanDoan}\n" +
-                                    "Thuốc: ${ba.thuoc}\n\n" +
-                                    "THÚ CƯNG:\n" +
-                                    "Tên: ${pet.title}\n" +
-                                    "Giống: ${pet.breed}\n" +
-                                    "Cân nặng: ${pet.weight} kg\n" +
-                                    "Ghi chú: ${pet.chitiet}"
-                    } else {
-                        imgHinhPet.setImageResource(R.drawable.so_benh_an)
-                        tvKetQua.text =
-                            "BỆNH ÁN #${ba.id}\n" +
-                                    "Ngày khám: ${ba.ngay}\n" +
-                                    "Triệu chứng: ${ba.trieuchung}\n" +
-                                    "Chẩn đoán: ${ba.chuanDoan}\n" +
-                                    "Thuốc: ${ba.thuoc}\n\n"
+                    dbPet.getPetById(ba.pet_id) { pet ->
+                        if (pet != null) {
+                            imgHinhPet.setImageResource(pet.image)
+                            tvKetQua.text =
+                                "BỆNH ÁN #${ba.id}\n" +
+                                        "Ngày khám: ${ba.ngay}\n" +
+                                        "Triệu chứng: ${ba.trieuchung}\n" +
+                                        "Chẩn đoán: ${ba.chuanDoan}\n" +
+                                        "Thuốc: ${ba.thuoc}\n\n" +
+                                        "THÚ CƯNG:\n" +
+                                        "Tên: ${pet.title}\n" +
+                                        "Giống: ${pet.breed}\n" +
+                                        "Cân nặng: ${pet.weight} kg\n" +
+                                        "Ghi chú: ${pet.chitiet}"
+                        } else {
+                            imgHinhPet.setImageResource(R.drawable.so_benh_an)
+                            tvKetQua.text =
+                                "BỆNH ÁN #${ba.id}\n" +
+                                        "Ngày khám: ${ba.ngay}\n" +
+                                        "Triệu chứng: ${ba.trieuchung}\n" +
+                                        "Chẩn đoán: ${ba.chuanDoan}\n" +
+                                        "Thuốc: ${ba.thuoc}\n\n"
+                        }
                     }
                 }
 

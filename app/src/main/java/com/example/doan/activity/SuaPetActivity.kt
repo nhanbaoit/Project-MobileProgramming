@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.doan.database.DBpet
+import com.example.doan.repository.FirebasePetRepository
 import com.example.doan.model.InforPet
 import com.example.doan.R
 
@@ -17,7 +17,8 @@ class SuaPetActivity : AppCompatActivity() {
     lateinit var edtNote: EditText
     lateinit var btnHuy: Button
     lateinit var btnLuu: Button
-    lateinit var dbPet: DBpet
+    lateinit var repo: FirebasePetRepository
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sua_pet)
@@ -35,19 +36,24 @@ class SuaPetActivity : AppCompatActivity() {
     }
 
     private fun setEvent() {
-        dbPet = DBpet(this)
-        val pet_id = intent.getIntExtra("Pet_ID", -1) //lấy id của pet mặc định là -1
+        repo = FirebasePetRepository()
+        val pet_id = intent.getStringExtra("Pet_ID") // lấy id chuỗi
 
-        if (pet_id == -1) {
-            Toast.makeText(this, "id pet sai sai", Toast.LENGTH_SHORT).show()
+        if (pet_id.isNullOrEmpty()) {
+            Toast.makeText(this, "id pet sai", Toast.LENGTH_SHORT).show()
             finish()
+            return
         } else {
-            val pet = dbPet.getpetID(pet_id)
-            pet?.let { // code này chỉ chạy khi khác null
-                edtname.setText(pet.title)
-                edtGiong.setText(pet.breed)
-                edtCanNang.setText(pet.weight.toString())
-                edtNote.setText(pet.chitiet)
+            repo.getPetById(pet_id) { pet ->
+                pet?.let {
+                    edtname.setText(pet.title)
+                    edtGiong.setText(pet.breed)
+                    edtCanNang.setText(pet.weight.toString())
+                    edtNote.setText(pet.chitiet)
+                } ?: run {
+                    Toast.makeText(this, "Không tìm thấy thú cưng", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
             }
         }
 
@@ -58,34 +64,37 @@ class SuaPetActivity : AppCompatActivity() {
             val GhiChu = edtNote.text.trim().toString()
 
             if (name.isNullOrEmpty()) {
-                edtname.setError("Vui lòng nhập dữ liệu")
+                edtname.error = "Vui lòng nhập dữ liệu"
                 return@setOnClickListener
             }
             if (giong.isNullOrEmpty()) {
-                edtGiong.setError("Vui lòng nhập dữ liệu")
+                edtGiong.error = "Vui lòng nhập dữ liệu"
                 return@setOnClickListener
             }
             if (canNang.isNullOrEmpty()) {
-                edtCanNang.setError("Vui lòng nhập dữ liệu")
+                edtCanNang.error = "Vui lòng nhập dữ liệu"
                 return@setOnClickListener
             }
 
             val pet = InforPet(
-                pet_id,
-                image = R.drawable.meo1,
+                id = pet_id,
+                image = R.drawable.meo1, // you can keep previous image if needed, but the original did this
                 title = name,
                 breed = giong,
                 weight = canNang.toFloat(),
                 chitiet = GhiChu
             )
-            dbPet.SuaPet(pet)
-            Toast.makeText(this, "sua thanh cong", Toast.LENGTH_LONG).show()
-
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            
+            repo.updatePet(pet, {
+                Toast.makeText(this, "sửa thành công", Toast.LENGTH_LONG).show()
+                finish()
+            }, {
+                Toast.makeText(this, "sửa thất bại", Toast.LENGTH_LONG).show()
+            })
         }
+        
         btnHuy.setOnClickListener {
             finish()
         }
     }
-}
+}

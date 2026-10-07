@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "90264316847",
+    "project_id": "petclinicapp-9f8b5",
+    "storage_bucket": "petclinicapp-9f8b5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:90264316847:android:d2dbd4f94873a2f2af1d5a",
+        "android_client_info": {
+          "package_name": "com.example.doan"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIuNPYdLLZGXtpiS8pVYtQJ9OaedSMGwM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

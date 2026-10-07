@@ -3,48 +3,46 @@ package com.example.doan.activity
 import android.content.Intent
 import android.os.Bundle
 import android.widget.AdapterView
-import android.widget.ImageView
-import android.widget.ListView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.doan.adapter.CustomAdapter
-import com.example.doan.database.DBpet
+import com.example.doan.repository.FirebasePetRepository
 import com.example.doan.model.InforPet
 import com.example.doan.R
-import com.example.doan.activity.TaiKhoanActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.doan.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var customAdapter: CustomAdapter
-    private lateinit var lvpet: ListView
-    private lateinit var db: DBpet
-    private lateinit var themPet: ImageView
-    private lateinit var bottomNav: BottomNavigationView
+    private lateinit var repository: FirebasePetRepository
     private var list = mutableListOf<InforPet>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setConTrol()
+        repository = FirebasePetRepository()
+        
+        customAdapter = CustomAdapter(this, list)
+        binding.lvpet.adapter = customAdapter
+
         setEvent()
+        loadData()
     }
 
-    private fun setConTrol() {
-        lvpet = findViewById(R.id.lvpet)
-        themPet = findViewById(R.id.imvAdd)
-        bottomNav = findViewById(R.id.bottomNav)
+    private fun loadData() {
+        // Lắng nghe dữ liệu real-time từ Firestore
+        repository.listenToPets { updatedList ->
+            list.clear()
+            list.addAll(updatedList)
+            customAdapter.notifyDataSetChanged()
+        }
     }
 
     private fun setEvent() {
-        db = DBpet(this)
-        list = db.LayDL()
-
-        customAdapter = CustomAdapter(this, list)
-        lvpet.adapter = customAdapter
-
         // Click pet -> chi tiết
-        lvpet.onItemClickListener =
+        binding.lvpet.onItemClickListener =
             AdapterView.OnItemClickListener { _, _, i, _ ->
                 val intent = Intent(this, ChiTietPetActivity::class.java)
                 intent.putExtra("Pet_ID", list[i].id)
@@ -52,45 +50,37 @@ class MainActivity : AppCompatActivity() {
             }
 
         // Thêm pet
-        themPet.setOnClickListener {
+        binding.imvAdd.setOnClickListener {
             startActivity(Intent(this, ThemPetActivity::class.java))
         }
 
-        bottomNav.setOnItemSelectedListener {
-            when (it.itemId) {
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
                 R.id.menu_pet -> true
                 R.id.menu_timKiem -> {
-                    val intent = Intent(this, SearchProfilePetActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-                    startActivity(intent)
+                    startActivity(Intent(this, SearchProfilePetActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                    })
                     true
                 }
-
                 R.id.menu_lichKham -> {
-                    val intent = Intent(this, DatLichActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-                    startActivity(intent)
+                    startActivity(Intent(this, DatLichActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                    })
                     true
                 }
-
-                R.id.menu_taiKhoan -> {
-                    val intent = Intent(this, TaiKhoanActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-                    startActivity(intent)
-                    true
-                }
-                R.id.menu_thongKe->{
-                    val intent = Intent(this, MangHinhThongKe::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
-                    startActivity(intent)
+                R.id.menu_thongKe -> {
+                    startActivity(Intent(this, MangHinhThongKe::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                    })
                     true
                 }
                 R.id.menu_taiKhoan -> {
-                    val intent = Intent(this, TaiKhoanActivity::class.java)
-                    startActivity(intent)
+                    startActivity(Intent(this, TaiKhoanActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT)
+                    })
                     true
                 }
-
                 else -> false
             }
         }
@@ -98,9 +88,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        bottomNav.selectedItemId = R.id.menu_pet
-        list.clear()
-        list.addAll(db.LayDL())
-        customAdapter.notifyDataSetChanged()
+        binding.bottomNav.selectedItemId = R.id.menu_pet
     }
 }

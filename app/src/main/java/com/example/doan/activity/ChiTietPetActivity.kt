@@ -8,14 +8,14 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.doan.adapter.CustomAdapterBenhAn
-import com.example.doan.database.DBBenhAn
-import com.example.doan.database.DBpet
+import com.example.doan.repository.FirebaseBenhAnRepository
+import com.example.doan.repository.FirebasePetRepository
 import com.example.doan.model.InforBenhAn
 import com.example.doan.R
 
 class ChiTietPetActivity : AppCompatActivity() {
-    lateinit var dbpet: DBpet
-    lateinit var dbBenhAn: DBBenhAn
+    lateinit var repoPet: FirebasePetRepository
+    lateinit var repoBenhAn: FirebaseBenhAnRepository
     lateinit var tvTieuDe: TextView
     lateinit var imgMeo : ImageView
     lateinit var tvtenPet: TextView
@@ -27,7 +27,8 @@ class ChiTietPetActivity : AppCompatActivity() {
     lateinit var customAdapterBenhAn: CustomAdapterBenhAn
     lateinit var lvBenhAn : ListView
 
-    var pet_id = -1;
+    var pet_id: String? = null
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chi_tiet_pet)
@@ -45,43 +46,49 @@ class ChiTietPetActivity : AppCompatActivity() {
         lvBenhAn = findViewById(R.id.lvbenhAn)
     }
     private fun setEvent(){
-        //Khởi tạo Database
-        dbpet = DBpet(this)
-        dbBenhAn = DBBenhAn(this)
+        repoPet = FirebasePetRepository()
+        repoBenhAn = FirebaseBenhAnRepository()
 
-        //Lấy pet theo ID và hiển thị thông tin chi tiết
-        pet_id = intent.getIntExtra("Pet_ID",-1)
-        val pet = dbpet.getpetID(pet_id)
-        pet?.let {
-            tvTieuDe.text = "${it.title}"
-            imgMeo.setImageResource(it.image)
-            tvtenPet.text = "Tên:  ${it.title}"
-            tvGiong.text = "Giống: ${it.breed}"
-            tvCanNang.text = "Cân nặng: ${it.weight} kg"
-            tvGhiChu.text = "Ghi chú(nếu có):  ${it.chitiet}"
+        pet_id = intent.getStringExtra("Pet_ID")
+        if (pet_id != null) {
+            repoPet.getPetById(pet_id!!) { pet ->
+                pet?.let {
+                    tvTieuDe.text = "${it.title}"
+                    imgMeo.setImageResource(it.image)
+                    tvtenPet.text = "Tên:  ${it.title}"
+                    tvGiong.text = "Giống: ${it.breed}"
+                    tvCanNang.text = "Cân nặng: ${it.weight} kg"
+                    tvGhiChu.text = "Ghi chú(nếu có):  ${it.chitiet}"
+                }
+            }
         }
 
-         //xử lý bệnh án
         lvBenhAn.onItemClickListener = AdapterView.OnItemClickListener{adapterView,view, i, lng ->
             val intent = Intent(this, ChiTietBenhAnActivity::class.java)
             intent.putExtra("Ba_ID",list[i].id)
-            intent.putExtra("Pet-ID",list[i].pet_id)
+            intent.putExtra("Pet_ID",list[i].pet_id)
             startActivity(intent)
         }
         tvAddBenhAn.setOnClickListener {
             val intent = Intent(this,ThemBenhAnActivity::class.java)
-            intent.putExtra("Pet_ID",pet_id)
+            intent.putExtra("Pet_ID", pet_id)
             startActivity(intent)
         }
     }
-    //Hàm này tự chạy khi màn hình hiện lên (hoặc khi quay lại từ màn hình Thêm)
+    
     override fun onResume() {
         super.onResume()
         loadDSBenhAn()
     }
+    
     private fun loadDSBenhAn(){
-        list = dbBenhAn.getBenhAnTheoPet(pet_id)
-        customAdapterBenhAn = CustomAdapterBenhAn(this, list)
-        lvBenhAn.adapter = customAdapterBenhAn
+        if (pet_id != null) {
+            repoBenhAn.getBenhAnByPet(pet_id!!) { result ->
+                list.clear()
+                list.addAll(result)
+                customAdapterBenhAn = CustomAdapterBenhAn(this@ChiTietPetActivity, list)
+                lvBenhAn.adapter = customAdapterBenhAn
+            }
+        }
     }
-}
+}

@@ -8,7 +8,8 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.doan.database.DBpet
+import android.widget.Toast
+import com.example.doan.repository.FirebasePetRepository
 import com.example.doan.model.InforPet
 import com.example.doan.R
 import com.example.doan.activity.SuaPetActivity
@@ -28,6 +29,7 @@ class CustomAdapter(val activity: Activity, val list: MutableList<InforPet>) :
         val chiTiet = rowview.findViewById<TextView>(R.id.tvInfor)
         val tvsua = rowview.findViewById<TextView>(R.id.tvSua)
         val tvXoa = rowview.findViewById<TextView>(R.id.tvXoa)
+        
         Title.text = list[position].title
         chiTiet.text =
             "${list[position].breed} | ${list[position].weight} kg | ${list[position].chitiet}"
@@ -35,25 +37,25 @@ class CustomAdapter(val activity: Activity, val list: MutableList<InforPet>) :
 
         tvsua.setOnClickListener {
             val intent = Intent(activity, SuaPetActivity::class.java)
-            intent.putExtra(
-                "Pet_ID",
-                list[position].id
-            )
-            //chuyển dữ liệu id_pet từ mainActivity sang SuaPetActivity
+            intent.putExtra("Pet_ID", list[position].id)
             activity.startActivity(intent)
         }
+        
         tvXoa.setOnClickListener {
             AlertDialog.Builder(activity)
                 .setTitle("Xóa")
                 .setMessage("Bạn có muốn xóa pet ${list[position].title}?")
                 .setPositiveButton("OK") { dialog, which ->
-                    val db = DBpet(activity)
-                    db.XoaPet(list[position].id)
-                    list.removeAt(position)
-                    notifyDataSetChanged()
+                    val repo = FirebasePetRepository()
+                    repo.deletePet(list[position].id, {
+                        Toast.makeText(activity, "Đã xóa", Toast.LENGTH_SHORT).show()
+                        // Firestore realtime listener will automatically update the list in MainActivity
+                    }, {
+                        Toast.makeText(activity, "Lỗi khi xóa", Toast.LENGTH_SHORT).show()
+                    })
                 }.setNegativeButton("Huy", null)
                 .show()
         }
         return rowview
     }
-}
+}

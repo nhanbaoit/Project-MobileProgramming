@@ -1,12 +1,10 @@
 package com.example.doan.model
 
 data class InforBenhAn(
-    var id: Int,
-    val pet_id: Int,
-    val ngay: String,
-    val trieuchung: String,
-    val chuanDoan: String,
-    val thuoc: String
-){
-
-}
+    var id: String = "",
+    var pet_id: String = "",
+    var ngay: String = "",
+    var trieuchung: String = "",
+    var chuanDoan: String = "",
+    var thuoc: String = ""
+)

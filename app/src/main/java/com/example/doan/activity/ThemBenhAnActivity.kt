@@ -5,7 +5,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.doan.database.DBBenhAn
+import com.example.doan.repository.FirebaseBenhAnRepository
 import com.example.doan.model.InforBenhAn
 import com.example.doan.R
 
@@ -16,7 +16,8 @@ class ThemBenhAnActivity : AppCompatActivity() {
     lateinit var edtThuocDieuTri: EditText
     lateinit var btnHuy: Button
     lateinit var btnLuu: Button
-    lateinit var dbBenhAn: DBBenhAn
+    lateinit var repoBenhAn: FirebaseBenhAnRepository
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_them_benh_an)
@@ -34,41 +35,48 @@ class ThemBenhAnActivity : AppCompatActivity() {
     }
 
     private fun setEvent() {
-        dbBenhAn = DBBenhAn(this)
-        val pet_id =intent.getIntExtra("Pet_ID",-1)
+        repoBenhAn = FirebaseBenhAnRepository()
+        val pet_id = intent.getStringExtra("Pet_ID") ?: ""
+        
         btnLuu.setOnClickListener {
-            var ngayKham = edtNgayKham.text.toString().trim()
-            var trieuChung = edtTrieuChung.text.toString().trim()
-            var ChuanDoan = edtChuanDoan.text.toString().trim()
-            var Thuoc = edtThuocDieuTri.text.toString().trim()
-            if (ngayKham.isNullOrEmpty()) {
-                edtNgayKham.setError("Vui lòng nhập dữ liệu")
+            val ngayKham = edtNgayKham.text.toString().trim()
+            val trieuChung = edtTrieuChung.text.toString().trim()
+            val chuanDoan = edtChuanDoan.text.toString().trim()
+            val thuoc = edtThuocDieuTri.text.toString().trim()
+            
+            if (ngayKham.isEmpty()) {
+                edtNgayKham.error = "Vui lòng nhập dữ liệu"
                 return@setOnClickListener
             }
-            if (trieuChung.isNullOrEmpty()) {
-                edtTrieuChung.setError("Vui lòng nhập dữ liệu")
+            if (trieuChung.isEmpty()) {
+                edtTrieuChung.error = "Vui lòng nhập dữ liệu"
                 return@setOnClickListener
             }
-            if (ChuanDoan.isNullOrEmpty()) {
-                edtChuanDoan.setError("Vui lòng nhập dữ liệu")
+            if (chuanDoan.isEmpty()) {
+                edtChuanDoan.error = "Vui lòng nhập dữ liệu"
                 return@setOnClickListener
             }
-            if (Thuoc.isNullOrEmpty()) {
-                edtThuocDieuTri.setError("Vui lòng nhập dữ liệu")
+            if (thuoc.isEmpty()) {
+                edtThuocDieuTri.error = "Vui lòng nhập dữ liệu"
                 return@setOnClickListener
             }
+            
             val ba = InforBenhAn(
-                0,
                 pet_id = pet_id,
                 ngay = ngayKham,
                 trieuchung = trieuChung,
-                chuanDoan = ChuanDoan,
-                thuoc = Thuoc
+                chuanDoan = chuanDoan,
+                thuoc = thuoc
             )
-            dbBenhAn.ThemBenhAn(ba)
-            Toast.makeText(this, "them thanh cong", Toast.LENGTH_LONG).show()
-            finish()
-
+            
+            repoBenhAn.addBenhAn(ba) { success ->
+                if (success) {
+                    Toast.makeText(this, "Thêm thành công", Toast.LENGTH_LONG).show()
+                    finish()
+                } else {
+                    Toast.makeText(this, "Lỗi thêm bệnh án", Toast.LENGTH_LONG).show()
+                }
+            }
         }
 
         btnHuy.setOnClickListener {

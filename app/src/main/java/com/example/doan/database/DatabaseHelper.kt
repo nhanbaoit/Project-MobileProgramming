@@ -141,8 +141,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "dbPet.db", n
             while (it.moveToNext()) {
                 val appt = Appointment(
                     id = it.getInt(it.getColumnIndexOrThrow("id")),
-                    petOwnerId = it.getInt(it.getColumnIndexOrThrow("petOwnerId")),
-                    pet_id = it.getInt(it.getColumnIndexOrThrow("pet_id")),
+                    petOwnerId = it.getString(it.getColumnIndexOrThrow("petOwnerId")) ?: "",
+                    pet_id = it.getString(it.getColumnIndexOrThrow("pet_id")) ?: "",
                     petName = it.getString(it.getColumnIndexOrThrow("petName")) ?: "(Không rõ)",
                     serviceType = it.getString(it.getColumnIndexOrThrow("serviceType")),
                     doctorName = it.getString(it.getColumnIndexOrThrow("doctorName")),
@@ -171,8 +171,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "dbPet.db", n
             if (it.moveToFirst()) {
                 Appointment(
                     id = it.getInt(it.getColumnIndexOrThrow("id")),
-                    petOwnerId = it.getInt(it.getColumnIndexOrThrow("petOwnerId")),
-                    pet_id = it.getInt(it.getColumnIndexOrThrow("pet_id")),
+                    petOwnerId = it.getString(it.getColumnIndexOrThrow("petOwnerId")) ?: "",
+                    pet_id = it.getString(it.getColumnIndexOrThrow("pet_id")) ?: "",
                     petName = it.getString(it.getColumnIndexOrThrow("petName")) ?: "(Không rõ)",
                     serviceType = it.getString(it.getColumnIndexOrThrow("serviceType")),
                     doctorName = it.getString(it.getColumnIndexOrThrow("doctorName")),
@@ -252,8 +252,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "dbPet.db", n
                 list.add(
                     Appointment(
                         id = it.getInt(it.getColumnIndexOrThrow("id")),
-                        petOwnerId = it.getInt(it.getColumnIndexOrThrow("petOwnerId")),
-                        pet_id = it.getInt(it.getColumnIndexOrThrow("pet_id")),
+                        petOwnerId = it.getString(it.getColumnIndexOrThrow("petOwnerId")) ?: "",
+                        pet_id = it.getString(it.getColumnIndexOrThrow("pet_id")) ?: "",
                         petName = it.getString(it.getColumnIndexOrThrow("petName")) ?: "(Không rõ)",
                         serviceType = it.getString(it.getColumnIndexOrThrow("serviceType")),
                         doctorName = it.getString(it.getColumnIndexOrThrow("doctorName")),
@@ -285,8 +285,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "dbPet.db", n
                 list.add(
                     Appointment(
                         id = it.getInt(it.getColumnIndexOrThrow("id")),
-                        petOwnerId = it.getInt(it.getColumnIndexOrThrow("petOwnerId")),
-                        pet_id = it.getInt(it.getColumnIndexOrThrow("pet_id")),
+                        petOwnerId = it.getString(it.getColumnIndexOrThrow("petOwnerId")) ?: "",
+                        pet_id = it.getString(it.getColumnIndexOrThrow("pet_id")) ?: "",
                         petName = it.getString(it.getColumnIndexOrThrow("petName")) ?: "(Không rõ)",
                         serviceType = it.getString(it.getColumnIndexOrThrow("serviceType")),
                         doctorName = it.getString(it.getColumnIndexOrThrow("doctorName")),
@@ -327,7 +327,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, "dbPet.db", n
         cursor.use {
             while (it.moveToNext()) {
                 val pet = InforPet(
-                    id = it.getInt(it.getColumnIndexOrThrow(KEY_ID)),
+                    id = it.getInt(it.getColumnIndexOrThrow(KEY_ID)).toString(),
                     image = it.getInt(it.getColumnIndexOrThrow(KEY_HINH)),
                     title = it.getString(it.getColumnIndexOrThrow(KEY_TEN)),
                     breed = it.getString(it.getColumnIndexOrThrow(KEY_GIONG)),

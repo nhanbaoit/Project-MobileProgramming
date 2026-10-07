@@ -77,12 +77,15 @@ class DatLichActivity : AppCompatActivity() {
     }
 
     private fun loadPetsData() {
-        petList = dbHelper.getAllPets()
-        val petNames = petList.map { "${it.title} - ${it.breed}" }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, petNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerPet.adapter = adapter
-        if (petList.isNotEmpty()) selectedPet = petList[0]
+        val petRepo = com.example.doan.repository.FirebasePetRepository()
+        petRepo.listenToPets { list ->
+            petList = list
+            val petNames = petList.map { "${it.title} - ${it.breed}" }
+            val adapter = ArrayAdapter(this@DatLichActivity, android.R.layout.simple_spinner_item, petNames)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerPet.adapter = adapter
+            if (petList.isNotEmpty()) selectedPet = petList[0]
+        }
     }
     private fun CheckUserRole(){
         val sharedPreferences = getSharedPreferences("UserRole",MODE_PRIVATE)

@@ -121,20 +121,23 @@ class CapNhatLichHenActivity : AppCompatActivity() {
         }
         return true
     }
-    private fun loadPetsAndSelectOld(oldPetId: Int) {
-        petList = dbHelper.getAllPets()
-        val petNames = petList.map { "${it.title} - ${it.breed}" }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, petNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerPet.adapter = adapter
+    private fun loadPetsAndSelectOld(oldPetId: String) {
+        val petRepo = com.example.doan.repository.FirebasePetRepository()
+        petRepo.listenToPets { list ->
+            petList = list
+            val petNames = petList.map { "${it.title} - ${it.breed}" }
+            val adapter = ArrayAdapter(this@CapNhatLichHenActivity, android.R.layout.simple_spinner_item, petNames)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerPet.adapter = adapter
 
-        val index = petList.indexOfFirst { it.id == oldPetId }
-        if (index != -1) {
-            spinnerPet.setSelection(index)
-            selectedPet = petList[index]
-        } else if (petList.isNotEmpty()) {
-            spinnerPet.setSelection(0)
-            selectedPet = petList[0]
+            val index = petList.indexOfFirst { it.id == oldPetId }
+            if (index != -1) {
+                spinnerPet.setSelection(index)
+                selectedPet = petList[index]
+            } else if (petList.isNotEmpty()) {
+                spinnerPet.setSelection(0)
+                selectedPet = petList[0]
+            }
         }
     }
 

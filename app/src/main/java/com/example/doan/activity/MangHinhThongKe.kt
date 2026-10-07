@@ -64,9 +64,10 @@ class MangHinhThongKe : AppCompatActivity() {
     }
 
     private fun loadStatistics() {
-        val dataList = dbThongKe.layDuLieuThongKe()
-        val adapter = ThongKeAdapter(this, dataList)
-        lvThongKe.adapter = adapter
+        dbThongKe.layDuLieuThongKe { dataList ->
+            val adapter = ThongKeAdapter(this@MangHinhThongKe, dataList)
+            lvThongKe.adapter = adapter
+        }
     }
 
     override fun onResume() {
