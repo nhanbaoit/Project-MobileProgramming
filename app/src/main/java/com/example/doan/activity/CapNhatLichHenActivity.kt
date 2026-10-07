@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.dd1_doan_lan4.Appointment
-import com.example.dd1_doan_lan4.DatabaseHelper
+import com.example.doan.model.Appointment
+import com.example.doan.database.DatabaseHelper
 import com.example.doan.R
 import com.example.doan.model.InforPet
 import com.google.android.material.bottomnavigation.BottomNavigationView
